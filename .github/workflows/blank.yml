@@ -1,0 +1,37 @@
+
+name: Build MomTotem
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Configurar Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Compilar MomTotem
+        run: gradle clean build
+
+      - name: Exportar el plugin
+        uses: actions/upload-artifact@v4
+        with:
+          name: MomTotem-26.3
+          path: build/libs/MomTotem-*.jar
+          if-no-files-found: error
